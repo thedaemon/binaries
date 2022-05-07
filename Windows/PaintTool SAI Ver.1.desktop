@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=PaintTool SAI Ver.1
-Exec=env WINEPREFIX="/home/thedaemon/.wine" wine C:\\\\windows\\\\command\\\\start.exe /Unix /home/thedaemon/.wine/dosdevices/c:/users/Public/Desktop/PaintTool\\ SAI\\ Ver.1.lnk
-Type=Application
-StartupNotify=true
-Icon=37F0_sai.0
-StartupWMClass=sai.exe
