@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=AGS 3.4.1
-Exec=env WINEPREFIX="/home/thedaemon/.wine" wine C:\\\\windows\\\\command\\\\start.exe /Unix /home/thedaemon/.wine/dosdevices/c:/users/Public/Desktop/AGS\\ 3.4.1.lnk
-Type=Application
-StartupNotify=true
-Path=/home/thedaemon/.wine/dosdevices/c:/Program Files/Adventure Game Studio 3.4.1
-Icon=DDAC_AGSEditor.0
-StartupWMClass=agseditor.exe
