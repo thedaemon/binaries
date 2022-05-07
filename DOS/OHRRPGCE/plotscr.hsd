@@ -1,0 +1,978 @@
+# PLOTSCR.HSD (rusalka)
+# This file holds the language definition for OHRRPGCE plotscripting.
+# modifying this file may have undesired/disasterous effects,
+# but reading it can be somewhat educational. Especially the constants.
+
+# functions marked with an x have not been implemented yet.
+# functions marked with a ? are implemented but untested
+
+#--------------------------------------------------------------------------
+# hard coded functions
+
+define function, begin
+0,noop,0                    # no operation
+1,wait,1,1                  # wait(cycles)
+2,waitforall,0              # wait for script-related walking&panning to stop
+3,waitforhero,1,0           # wait for hero to stop moving
+4,waitfornpc,1,0            # wait for npc to stop moving
+5,suspendnpcs,0             # pause normal NPC movement
+6,suspendplayer,0           # stop the player from controlling stuff (except text boxes)
+7,resumenpcs,0              # resume npc automation
+8,resumeplayer,0            # unlock players controls
+9,waitforkey,1,99           # wait for a keypress
+10,walkhero,3,0,2,1         # walk hero(who,direction,distance)
+11,showtextbox,1,1          # show a text box
+12,checktag,1,0             # returns the value of a tag
+13,settag,2,0,0             # set tag(#,true/false)
+15,usedoor,1,0              # use door(#)
+16,fightformation,1,0       # fight formation(#)
+17,getitem,2,0,1            # get item(item,quantity)
+18,deleteitem,2,0,1         # delete item(item,quantity)
+19,leader,0                 # returns the current leader
+20,getmoney,1,0             # get money(amount)
+21,losemoney,1,0            #? lose money(amount) no checking
+22,paymoney,1,0             # returns false and subtracts nothing if cannot afford
+23,unequip,2,0,1            # (who,where)
+24,forceequip,3,0,1,0       # (who,where,item)
+25,setheroframe,2,0,0       # (who,frame) frame is 0 or 1
+26,setNPCframe,2,0,0        # (who,frame) frame is 0 or 1
+27,suspendoverlay,0         # turns off overhead tiles
+28,playsong,1,0             # play song(#)
+29,stopsong,0               # stop the music
+30,keyval,1,0               # check key by scancode - returns value from keyval array
+31,rankincaterpillar,1,0    # finds the heros position in the caterpillar
+32,showbackdrop,1,0         # showbackdrop (#)
+33,showmap,0                # cancels a showbackdrop
+34,dismountvehicle,0        # dismount whatever vehicle you may be riding
+35,useNPC,1,0               # trigger an NPC remotely
+37,useshop,1,0              #? use shop(#)
+38,camerafollowshero,1,0    # make camera follow a hero
+39,camerafollowsnpc,1,0     # make camera follow an npc
+40,pancamera,3,0,1,2        # pan camera(direction,distance,pixelstep)
+41,focuscamera,3,0,0,2      # focus camera(x,y,pixelstep)
+42,waitforcamera,0          # waits for pan or focus to finish
+43,herox,1,0                # returns the hero's x coordinate
+44,heroy,1,0                # returns the hero's y coordinate
+45,npcx,1,0                 # returns the npc's x coordinate
+46,npcy,1,0                 # returns the npc's y coordinate
+47,suspendobstruction,0     # lets heros walk through NPCs and vice versa
+48,resumeobstruction,0      # restores normal obstruction behavior
+49,suspendherowalls,0       # lets heros walk through walls
+50,suspendNPCwalls,0        # lets heros and npcs walk through walls
+51,resumeherowalls,0        # restores normal hero wall behavior
+52,walknpc,3,0,2,1          # walk npc(who,direction,distance)
+53,setherodirection,2,0,2   # set hero direction(who,direction)
+54,setnpcdirection,2,0,2    # set npc direction(who,direction)
+55,getdefaultweapon,1,0     # (who)
+56,setdefaultweapon,2,0,0   # (who,item)
+57,suspendcatapillar,0      # misspelled alias for backcompat
+58,resumecatapillar,0       # misspelled alias for backcompat
+59,waitfortextbox,0         # waits for text box to go away
+60,equipwhere,2,0,0         #? (who,item) returns the slot that an item can be equipped in, or false if the hero cant equip it
+61,teleporttomap,3,0,0,0    # teleport to map (map,x,y)
+62,suspendrandomenemys,0    # misspelled alias for backcompat
+63,resumerandomenemys,0     # misspelled alias for backcompat
+64,getherostat,3,0,0,0      # returns a hero's stat (who,stat,cur/max)
+65,resumeoverlay,0          # turns overhead tiles back on
+66,addhero,1,0              # adds a hero to the party
+67,deletehero,1,0           # deletes a hero from the party
+68,swapouthero,1,0          # move a hero out of the active party
+69,swapinhero,1,0           # moves a hero into the active party (if there is room)
+70,roominactiveparty,0      # returns the number of empty slots in the active party (0-3)
+71,lockhero,1,0             # prevents swapping of a hero
+72,unlockhero,1,0           #? reverses lockhero
+73,gameover,0               # returns you to the title screen
+74,setdeathscript,1,0       # changes what script is run when you die
+75,fadescreenout,3,0,0,0    # fade screen out (red,green,blue)
+76,fadescreenin,0           # fade back to color after fade screen out
+77,showvalue,1,0            # display a number in the bottom left corner
+78,alterNPC,3,0,0,0         # replaces one of an NPC's stats
+79,shownovalue,0            # hide the number from showvalue
+80,currentmap,0             # returns the number of the current map
+81,setherospeed,2,0,4       # changes a heros walking speed
+82,inventory,1,0            # returns the count of a given item
+83,setherostat,4,0,0,1,0    # alters a hero's stats (who,stat,value,cur/max)
+84,suspendboxadvance,0      # prevents user from advancing text boxes
+85,resumeboxadvance,0       # reverses suspendboxadvance
+86,advancetextbox,0         # as if the user had pressed a key
+87,setheroposition,3,0,0,0  # arbitraraly set x,y
+88,setNPCposition,3,0,0,0   # arbitraraly set x,y
+89,swapbyposition,2,0,0     # swap two hero slots
+90,findhero,1,0             # locate hero slot by hero name
+91,checkequipment,2,0,1     # what is a hero equipped with? (who,where)
+#92,daysofplay,0             # returns the days, these opcodes remain for compatability
+#93,hoursofplay,0            # returns the hours
+#94,minutesofplay,0          # returns the minutes
+95,resumeNPCwalls,0         # restores normal NPC wall behavior
+96,setheroz,2,0,0           # sets the hero's vertical position
+97,readmapblock,2,0,0       # get mapblock x,y
+98,writemapblock,3,0,0,0    # set mapblock x,y,value
+99,readpassblock,2,0,0      # get passblock x,y
+100,writepassblock,3,0,0,0  # set passblock x,y,value
+101,NPCdirection,1,0        # return an NPC's direction
+102,herodirection,1,0       # return a hero's direction
+103,resetpalette,0          # return the master palette to defaults
+104,tweakpalette,5,0,0,0,0,255 # alter the master palette
+105,readcolor,2,0,0         # return a color value
+106,writecolor,3,0,0,0      # change a color value
+107,updatepalette,0         # apply changes made with writecolor
+108,seedrandom,1,0          #? reseed the random number generator
+109,greyscalepalette,2,0,255# convert the palette to greyscale
+110,setheropicture,3,0,0,1  # who,picture,type
+111,setheropalette,3,0,0,1  # who,palette,type
+112,getheropicture,2,0,1    # who,type
+113,getheropalette,2,0,1    # who,type
+114,readglobal,1,0          # index
+115,writeglobal,2,0,0       # index,value
+116,heroiswalking,1,0       # (who)
+#117,NPCiswalking,1,0       #x obsolete, backwards compatability only
+118,suspendcaterpillar,0    # other heros stop following the leader, and can be manipulated separately.
+119,resumecaterpillar,0     # turns catapillar party back on
+120,NPCreference,2,0,0      # get an NPC reference by ID number
+121,NPCatspot,3,0,0,0       # get NPC reference by X,Y
+122,getNPCID,1,0            # get the ID number of an NPC reference
+123,NPCcopycount,1,0        # find out how many copys of an NPC ID are on the map
+124,changeNPCID,2,0,0       # given an NPC reference, changes its ID
+125,createNPC,4,0,0,0,2     # create an NPC by ID at a location and return its reference
+126,destroyNPC,1,0          # destroy the referenced NPC
+127,teachspell,3,0,0,0      # (who,spell,learntype) tries to teach a hero a spell
+128,forgetspell,2,0,0       # (who,spell) forget a learned spell
+129,readspell,3,0,0,0       # (who,list,slot) returns the number of the spell in a slot
+130,writespell,4,0,0,0,0    # (who,list,slot,spell) forces a hero to learn a spell
+131,knowsspell,2,0,0        # (who,spell) returns true if the hero already knows this spell
+132,canlearnspell,3,0,0,0   # (who,spell,learntype) returns true if the hero can learn the spell
+133,herobyslot,1,0          # returns the hero ID/name of the hero at a particular slot in the party
+134,herobyrank,1,0          # returns the hero ID/name of the hero at a particular rank in the caterpillar
+135,puthero,3,0,0,0         #? (who,x,y) set hero pixel-position
+136,putnpc,3,0,0,0          # (who,x,y) set npc pixel position
+137,putcamera,2,0,0         # (x,y) set screen pixel position
+138,heropixelx,1,0          #? (who) get hero pixel x
+139,heropixely,1,0          #? (who) get hero pixel y
+140,npcpixelx,1,0           # (who) get npc pixel x
+141,npcpixely,1,0           # (who) get npc pixel y
+142,camerapixelx,0          #? get camera pixel x
+143,camerapixely,0          #? get camera pixel y
+144,loadtileset,1,-1        # load a new tileset for the current map
+145,pickhero,0              # lets you manually pick a hero
+146,renameherobyslot,1,0    # lets you manually rename a hero
+147,readgeneral,1,0         # directly read from the in-memory array of general game data
+148,writegeneral,2,0,0      # directly write to the in-memory array of general game data. If you crash your game with this command, don't be too surprised
+150,statusscreen,1,0        # display the status screen for a hero
+151,showminimap,0           # display the mini-map
+152,spellsmenu,1,0          # display the spell menu for a hero
+153,itemsmenu,0             # display the items menu
+154,equipmenu,1,0           # display the equip menu for a hero
+#155,savemenu,0             # obsolete in favor of ID 170
+157,ordermenu,0             # display the order menu
+158,teammenu,0              # display the team menu
+159,initmouse,0             # init mouse, return true if a mouse is installed
+160,mousepixelx,0           # returns mouse x coordinate on the screen
+161,mousepixely,0           # returns mouse y coordinate on the screen
+162,mousebutton,1,0         # returns true if the specified button is pressed
+163,putmouse,2,160,100      # places the mouse at a point on the screen
+164,mouseregion,4,0,319,0,199 # define the rectangle in which the mouse can move (xmin, xmax, ymin, ymax)
+165,npcatpixel,3,0,0,0      # returns NPC at pixel x,y, third arg is which npc (on -1 returns number of npcs at pixel)
+166,saveinslot,1,0	    # save game in slot
+167,lastsaveslot,0	    # returns the last save slot the game was saved in, false if unsaved
+168,suspendrandomenemies,0  # keeps random enemies from attacking
+169,resumerandomenemies,0   # undoes suspendrandomenemies
+170,savemenu,1,-1           # display the save menu
+171,saveslotused,1,1        # returns true if a saved game exists in the specified slot
+172,importglobals,3,1,-1,-1 # (slot, first, last) reads a range of globals from a save slot
+173,exportglobals,3,1,0,1024 # (slot, first, last) writes a range of globals to a save slot
+174,loadfromslot,1,1        # loads saved game from slot
+175,deletesave,1,1          # delete (hide from load/save screen - data not *actaully* deleted) specified slot
+176,runscriptbyid,9,0,0,0,0,0,0,0,0,0 # run a script by its id number and pass up to 8 arguments
+177,NPCiswalking,1,0        # (who) returns true if walking (for real, unlike the old implementation)
+178,readgmap,1,0            # read from general map data array
+179,writegmap,2,0,0         # write a gmap data item
+180,mapwidth,0              # returns map height in tiles
+181,mapheight,0             # returns map width in tiles
+182,readNPC,2,0,0           # reads information about an NPC on the current map (corresponds to alterNPC)
+183,setherolevel,3,0,0,1    # change a hero's level
+184,giveexperience,2,-1,1   # (who, how much) gives a hero or the active party experience
+185,herolevelled,1,0        # number of levels gained last battle/giveexperience command.
+186,spellslearnt,2,0,0      # number spells and spell ids hero learnt at last battle/giveexperience command.
+187,getmusicvolume,0        # music volume on a scale of 0-255 regardless of implementation
+188,setmusicvolume,1,128    # set music volume on a scale of 0-255
+189,getformationsong,1,0	# returns the song associated with a given formation
+190,setformationsong,2,0,0	# sets the song associated with a given formation
+200,system hour,0
+201,system minute,0
+202,system second,0
+203,current song,0
+204,get hero name,2,0,0	    # (string, hero) - puts the name of hero(hero) in string(string)
+205,set hero name,2,0,0	    # (string, hero) - sets the name of hero(hero) to string(string)
+206,get item name,2,0,0	    # (string, item) - puts the name of item(item) in string(string)
+207,get map name,2,0,0	    # (string, map) - puts the name of map(map) in string(string)
+208,get attack name,2,0,0   # (string, attack) - puts the name of attack(attack) in string(string)
+209,get global string,2,0,0 # (string, global) - puts the global string (global) in string(string)
+210,showstring,1,0            #shows string on the bottom(stringID)
+211,clearstring,1,0           #deletes the data from string(stringID)
+212,appendascii,2,0,0         #adds ascii to string(stringID,ascii)
+213,appendnumber,2,0,0        #adds number to string(stringID,number)
+214,copystring,2,0,0          #copies string from one to another(sourceID,destinationID)
+215,concatenatestrings,2,0,0  #adds two strings(sourceID,destinationID)
+216,stringlength,1,0          #returns the length of string(stringID)
+217,deletechar,2,0,1          #deletes character from string(stringID,position)
+218,replacechar,3,0,1,0       #replaces character in the specified string(stringID,position,ascii)
+219,asciifromstring,2,0,1     #returns the ascii in the string(ascii number)(stringID,position)
+220,positionstring,3,0,0,0    #move a string to a position on the screen(stringID,x,y)
+221,setstringbit,3,0,0,0      #set a string bit, such as: visibility, style(stringID,bit,value)
+222,getstringbit,2,0,0        #return a string bit, such as: visibility, style(stringID,bit)
+223,stringcolor,3,0,15,0      #set a string's color,also optional background color(stringID,fColor,bColor)
+224,stringx,1,0               #return a string's X position(stringID)
+225,stringy,1,0               #return a string's Y position(stringID)
+226,systemday,0               #returns system day
+227,systemmonth,0             #returns system month
+228,systemyear,0              #returns system year
+229,stringcompare,2,0,0	      #returns whether two strings are the same(stringID1, stringID2)
+230,readenemydata,2,0,0       #reads enemy data(enemy,dataposition)
+231,writeenemydata,3,0,0,0    #writes enemy data(enemy,dataposition,value)
+232,trace,1,0                 #writes the provided string to G_DEBUG.txt
+233,getsongname,2,0,0         #get song name and store in string
+#234 loadmenu not supported
+235,keyispressed,1,0          #check key by scancode, returns a bool
+end
+
+#--------------------------------------------------------------------------
+# soft coded functions
+
+define script,begin
+autonumber,walkherotoX,2,0,0        # walk hero to X (who,x)
+autonumber,walknpctoX,2,0,0         # walk npc to X (who,x)
+autonumber,walkherotoY,2,0,0        # walk hero to Y (who,y)
+autonumber,walknpctoY,2,0,0         # walk npc to Y (who,y)
+autonumber,setNPCspeed,2,0,4        # set an NPC's walking speed
+autonumber,swapbyname,2,0,0         # make two named heros switch places
+autonumber,getherolevel,1,0         # return hero's current level
+autonumber,renamehero,1,0           # rename a hero (uses hero:name)
+autonumber,autosave,0               # automatically save in the most recent slot
+autonumber,stringtoglobals,3,0,0,0  #converts string to global(stringID,start,length)
+autonumber,globalstostring,3,0,0,0  #builds strings from globals(stringID,start,length)
+autonumber,showstringat,3,0,0,0     #positions a string on the screen and makes it visible(stringID,x,y)
+autonumber,centerstringat,3,0,0,0   #positions a string on the screen and makes it visible(stringID,x,y)
+autonumber,hidestring,1,0           #makes a visible string invisible(stringID)
+autonumber,stringstyle,2,0,0        #changes a string's style: outline,flat(stringID,style)
+autonumber,lastascii,0			#returns the ascii code of the key being held down
+autonumber,inputstring,6,0,40,0,-1,160,110  #allows the player to input a string. Returns false on ESC. (string,max len,use cur,center,x,y)
+end
+
+script,walkherotoX,who,n,begin
+if (n<<heroX(who)) then(walk hero(who,west,heroX(who)--n))
+if (n>>heroX(who)) then(walk hero(who,east,n--heroX(who)))
+end
+
+script,walkherotoY,who,n,begin
+if (n<<heroY(who)) then(walk hero(who,north,heroY(who)--n))
+if (n>>heroY(who)) then(walk hero(who,south,n--heroY(who)))
+end
+
+script,walkNPCtoX,who,n,begin
+if (n<<NPCX(who)) then(walk NPC(who,west,NPCX(who)--n))
+if (n>>NPCX(who)) then(walk NPC(who,east,n--NPCX(who)))
+end
+
+script,walkNPCtoY,who,n,begin
+if (n<<NPCY(who)) then(walk NPC(who,north,NPCY(who)--n))
+if (n>>NPCY(who)) then(walk NPC(who,south,n--NPCY(who)))
+end
+
+script,setNPCspeed,who,speed,begin
+alterNPC(who,NPCstat:movespeed,speed)
+end
+
+script,swapbyname,hero1,hero2,begin
+ hero1:=findhero(hero1)
+ hero2:=findhero(hero2)
+ if (hero1==-1,or,hero2==-1)
+  then (return(false))
+  else (return(true),swapbyposition(hero1,hero2))
+end
+
+script,renamehero,who,begin
+  variable(slot)
+  slot:=findhero(who)
+  if(slot>=0)
+    then(renameherobyslot(slot),return(true))
+    else(return(false))
+end
+
+# this exploits an undocumented feature of getherostat. You can
+# also change the hero's level by using setherostat on stat 12, but
+# that is not reccomended, as it does not update the hero's experience
+script,getherolevel,who,begin
+  return(getherostat(who,12,currentstat))
+end
+
+script,autosave,begin
+if (lastsaveslot==0)
+  then(return(savemenu))
+  else(saveinslot(lastsaveslot),return(lastsaveslot))
+end
+
+script,stringtoglobals,stringID,start,length,begin
+  variable(temp)
+  if (stringID>=0,and,stringID<=31) then(
+    if (length>=1,and,length<=40) then(
+      for (temp,1,length) do(
+        writeglobal(start+(temp--1),asciifromstring(stringid,temp))
+      )
+    )
+  )
+end
+
+script,globalstostring,stringID,start,length,begin
+  variable(temp)
+  variable(temp2)
+  if (stringID>=0,and,stringID<=31) then(
+    clearstring(stringid)
+    if (length>=1,and,length<=40) then(
+      for (temp,1,length) do(
+        temp2:=readglobal(start+(temp--1))
+        if (temp2>=0,and,temp2<=255) then(appendascii(stringid,temp2))
+      )
+    )
+  )
+end
+
+script,showstringat,stringID,x,y,begin
+  setstringbit(stringID,0,1)
+  positionstring(stringID,x,y)
+end
+
+script,centerstringat,stringID,x,y,begin
+  setstringbit(stringID,0,1)
+  positionstring(stringID,x--(stringlength(stringID)*4),y)
+end
+
+script,hidestring,stringID,begin
+  setstringbit(stringID,0,0)
+end
+
+script,stringstyle,stringID,style,begin
+  setstringbit(stringID,1,style)
+end
+
+script, last ascii, begin
+	variable(code, shift)
+
+	shift := keyispressed(42)==true, or, keyispressed(54)==true
+
+	if(keyispressed(30)) then (code := 65) #A...
+	if(keyispressed(48)) then (code := 66)
+	if(keyispressed(46)) then (code := 67)
+	if(keyispressed(32)) then (code := 68)
+	if(keyispressed(18)) then (code := 69)
+	if(keyispressed(33)) then (code := 70)
+	if(keyispressed(34)) then (code := 71)
+	if(keyispressed(35)) then (code := 72)
+	if(keyispressed(23)) then (code := 73)
+	if(keyispressed(36)) then (code := 74)
+	if(keyispressed(37)) then (code := 75)
+	if(keyispressed(38)) then (code := 76)
+	if(keyispressed(50)) then (code := 77)
+	if(keyispressed(49)) then (code := 78)
+	if(keyispressed(24)) then (code := 79)
+	if(keyispressed(25)) then (code := 80)
+	if(keyispressed(16)) then (code := 81)
+	if(keyispressed(19)) then (code := 82)
+	if(keyispressed(31)) then (code := 83)
+	if(keyispressed(20)) then (code := 84)
+	if(keyispressed(22)) then (code := 85)
+	if(keyispressed(47)) then (code := 86)
+	if(keyispressed(17)) then (code := 87)
+	if(keyispressed(45)) then (code := 88)
+	if(keyispressed(21)) then (code := 89)
+	if(keyispressed(44)) then (code := 90)#...Z
+	if(keyispressed(2)) then (if(shift) then (code :=33) else (code :=49)) # 1...
+	if(keyispressed(3)) then (if(shift) then (code :=64) else (code :=50))
+	if(keyispressed(4)) then (if(shift) then (code :=35) else (code :=51))
+	if(keyispressed(5)) then (if(shift) then (code :=36) else (code :=52))
+	if(keyispressed(6)) then (if(shift) then (code :=37) else (code :=53))
+	if(keyispressed(7)) then (if(shift) then (code :=94) else (code :=54))
+	if(keyispressed(8)) then (if(shift) then (code :=38) else (code :=55))
+	if(keyispressed(9)) then (if(shift) then (code :=42) else (code :=56))
+	if(keyispressed(10)) then (if(shift) then (code :=40) else (code :=57))
+	if(keyispressed(11)) then (if(shift) then (code :=41) else (code :=48)) # ...0
+	if(keyispressed(41)) then (if(shift) then (code :=126) else (code :=96)) # ` ~
+	if(keyispressed(12)) then (if(shift) then (code :=95) else (code :=45)) # - _
+	if(keyispressed(13)) then (if(shift) then (code := 43) else (code := 61)) # = +
+	if(keyispressed(26)) then (if(shift) then (code := 123) else (code := 91)) # [ {
+	if(keyispressed(27)) then (if(shift) then (code := 125) else (code := 93)) # ] }
+	if(keyispressed(39)) then (if(shift) then (code := 58) else (code := 59)) # ; :
+	if(keyispressed(40)) then (if(shift) then (code := 34) else (code := 39)) # ' "
+	if(keyispressed(51)) then (if(shift) then (code := 60) else (code := 44)) # , <
+	if(keyispressed(52)) then (if(shift) then (code := 62) else (code := 46)) # . >
+	if(keyispressed(53)) then (if(shift) then (code := 63) else (code := 47)) # / ?
+	if(keyispressed(43)) then (if(shift) then (code := 124) else (code := 92)) # \ |
+	#if(keyispressed(40)) then (code := 47) # Num / WTF? What's the code for the other "/"?
+	if(keyispressed(55)) then (code := 42) # Num *
+	if(keyispressed(71)) then (code := 55) # Num 7
+	if(keyispressed(72)) then (code := 56) # Num 8
+	if(keyispressed(73)) then (code := 57) # Num 9
+	if(keyispressed(74)) then (code := 45) # Num -
+	if(keyispressed(75)) then (code := 52) # Num 4
+	if(keyispressed(76)) then (code := 53) # Num 5
+	if(keyispressed(77)) then (code := 54) # Num 6
+	if(keyispressed(78)) then (code := 43) # Num +
+	if(keyispressed(79)) then (code := 49) # Num 1
+	if(keyispressed(80)) then (code := 59) # Num 2
+	if(keyispressed(81)) then (code := 51) # Num 3
+	if(keyispressed(82)) then (code := 48) # Num 0
+	if(keyispressed(83)) then (code := 46) # Num .
+	if(keyispressed(57)) then (code := 32) #Space
+
+
+	if(code <= 90, and, code >= 65) then, begin
+		if(shift == false) then (code += 32)
+	end
+
+	return (code)
+
+end
+
+script, input string, str, max len, useexist, center, positionx, positiony, begin
+  variable(done, key, show)
+  if(useexist) else(clear string(str))
+  while(string length(str)>>maxlen) do(delete char(str,string length(str)))
+  show:=getstringbit(str,0)==0
+  if(center==0) then(show string at(str,positionx,positiony)) else(
+    if(center==1,or,show) then(
+      center string at(str,positionx,positiony)
+    )
+  )
+  while(done == false) do, begin
+    if(center==1,or,(show,and,center<>0)) then(center string at(str,positionx,positiony))
+    wait for key
+    if(key is pressed(28)) then(done:=true, return(true)) else(
+      if(key is pressed(14)) then(delete char(str,string length(str)))
+      key:=last ascii
+      if(key, and, string length(str)<<max len) then(append ascii(str,key)) else(
+        while(key is pressed(1)) do, begin
+          done:=true
+          return(false)
+          if(read general(44),and,2) else(suspendplayer, wait, resumeplayer)
+        end
+      )
+    )
+  end
+  if(show) then(hide string)
+end
+
+#--------------------------------------------------------------------------
+#read/write enemy wrappers
+
+define script(autonumber,getenemyname,2,0,0)
+script,getenemyname,enemyID,stringID,begin
+variable(t)
+  for (t,1,readenemydata(enemyID,0))do(
+    appendascii(stringID,readenemydata(enemyid,t))
+  end
+end
+
+define script(autonumber,getenemystat,2,0,0)
+script,getenemystat,enemyid,stat,begin
+  return(readenemydata(enemyid,stat+62))
+end
+
+define script(autonumber,setenemystat,3,0,0,0)
+script,setenemystat,enemyid,stat,value,begin
+  writeenemydata(enemyid,stat+62,value)
+end
+
+define script(autonumber,setenemyname,2,0,0)
+script,setenemyname,enemyid,stringid,begin
+variable(t,t2)
+if(stringlength(stringid)>=16)then(t2:=16)else(t2:=stringlength(stringid))
+ writeenemydata(enemyid,0,t2)
+ for(t,1,t2)do(
+  writeenemydata(enemyid,t,asciifromstring(stringid,t))
+ )
+end
+
+define script(autonumber,getenemyappearance,2,0,0)
+script,getenemyappearance,enemyid,appearance,begin
+  return(readenemydata(enemyid,appearance))
+end
+
+define script(autonumber,setenemyappearance,3,0,0,0)
+script,setenemyappearance,enemyid,appearance,value,begin
+  writeenemydata(enemyid,appearance,value)
+end
+
+#--------------------------------------------------------------------------
+# read/write general wrappers
+
+define script(autonumber,set victory music,1,0)
+script,set victory music,song,begin
+  write general(3,song)
+end
+
+define script(autonumber,get death script,none)
+script,get death script,begin
+  return(read general(42))
+end
+
+define script(autonumber,get load script,none)
+script,get load script,begin
+  return(read general(57))
+end
+
+define script(autonumber,set load script,1,0)
+script,set load script,ID,begin
+  write general(57,ID)
+end
+
+define script(autonumber,set battle wait mode,1,1)
+script,set battle wait mode,bit,begin
+  if(bit) then(bit:=1)
+  write general(101,(read general(101),and,32766)+bit)
+end
+
+define script(autonumber,set caterpillar mode,1,1)
+script,set caterpillar mode,bit,begin
+  if(bit) then(bit:=2)
+  write general(101,(read general(101),and,32765)+bit)
+end
+
+define script(autonumber,set no HP level up restore,1,1)
+script,set no HP level up restore,bit,begin
+  if(bit) then(bit:=4)
+  write general(101,(read general(101),and,32763)+bit)
+end
+
+define script(autonumber,set no MP level up restore,1,1)
+script,set no MP level up restore,bit,begin
+  if(bit) then(bit:=8)
+  write general(101,(read general(101),and,32759)+bit)
+end
+
+define script(autonumber,set inn no revive mode,1,1)
+script,set inn no revive mode,bit,begin
+  if(bit) then(bit:=16)
+  write general(101,(read general(101),and,32751)+bit)
+end
+
+define script(autonumber,set full hero swap mode,1,1)
+script,set full hero swap mode,bit,begin
+  if(bit) then(bit:=32)
+  write general(101,(read general(101),and,32735)+bit)
+end
+
+define script(autonumber,hide battle ready meter,1,1)
+script,hide battle ready meter,bit,begin
+  if(bit) then(bit:=64)
+  write general(101,(read general(101),and,32703)+bit)
+end
+
+define script(autonumber,hide battle health meter,1,1)
+script,hide battle health meter,bit,begin
+  if(bit) then(bit:=128)
+  write general(101,(read general(101),and,32639)+bit)
+end
+
+define script(autonumber,set debug keys disable,1,1)
+script,set debug keys disable,bit,begin
+  if(bit) then(bit:=256)
+  write general(101,(read general(101),and,32511)+bit)
+end
+
+define script(autonumber,suspend map music,0)
+script,suspend map music, begin
+ write general(44,read general(44),or,512)
+end
+
+define script(autonumber,resume map music,0)
+script,resume map music, begin
+ write general(44,read general(44),and,32255)
+end
+
+#--------------------------------------------------------------------------
+# read/write gmap wrappers
+
+define script(autonumber,get map tileset,0)
+script,get map tileset,begin
+  return(read gmap(0))
+end
+
+define script(autonumber,get ambient music,0)
+script, get ambient music, begin
+  return (read gmap(1) -- 1)
+end
+
+define script(autonumber,set ambient music,1,-1)
+script, set ambient music, song, begin
+  write gmap(1,song + 1)
+  if (song >= 0) then (play song (song)) else (stop song)
+end
+
+define script(autonumber,allow minimap,1,1)
+script,allow minimap,setting,begin
+  write gmap(2,setting)
+end
+
+define script(autonumber,allow save anywhere,1,1)
+script,allow save anywhere,setting,begin
+  write gmap(3,setting)
+end
+
+define script(autonumber,cancel map name display,0)
+script,cancel map name display,begin
+  write gmap(4,0)
+end
+
+define script(autonumber,set map edge mode,2,0,0) #second argument only used with DefaultTile
+script,set map edge mode,mode,tile,begin
+  write gmap(5,mode)
+  write gmap(6,tile)
+end
+
+define script(autonumber,get map edge mode,0)
+script,get map edge mode,begin
+  return(read gmap(5))
+end
+
+define script(autonumber,set harm tile damage,1,0)
+script,set harm tile damage,damage,begin
+  write gmap(9,damage)
+end
+
+define script(autonumber,set harm tile flash,1,0)
+script,set harm tile flash,colour,begin
+  write gmap(10,colour)
+end
+
+define script(autonumber,get footoffset,0)
+script,get footoffset,begin
+  return(read gmap(11))
+end
+
+define script(autonumber,set footoffset,1,0)
+script,set footoffset,offset,begin
+  write gmap(11,offset)
+end
+
+define script(autonumber,get instead of battle script,0)
+script,get instead of battle script,begin
+  return (read gmap(13))
+end
+
+define script(autonumber,set instead of battle script,1,0)
+script,set instead of battle script,ID,begin
+  write gmap(13,ID)
+end
+
+define script(autonumber,get each step script,0)
+script,get each step script,begin
+  return (read gmap(14))
+end
+
+define script(autonumber,set each step script,1,0)
+script,set each step script,ID,begin
+  write gmap(14,ID)
+end
+
+define script(autonumber,get on keypress script,0)
+script,get on keypress script,begin
+  return (read gmap(15))
+end
+
+define script(autonumber,set on keypress script,1,0)
+script,set on keypress script,ID,begin
+  write gmap(15,ID)
+end
+
+define script(autonumber,draw npcs above heroes,1,1)
+script,draw npcs above heroes,setting,begin
+  write gmap(16,setting)
+end
+define script(autonumber,get damage cap,0)
+script,get damage cap,begin
+	return(readgeneral(63))
+end
+define script(autonumber,set damage cap,1,0)
+script,set damage cap,c,begin
+	writegeneral(63,c)
+end
+
+#--------------------------------------------------------------------------
+# new wrappers/re-inventing of the wheel commands
+
+define script, begin
+	autonumber,days of play,0
+	autonumber,hours of play,0
+	autonumber,minutes of play,0
+	autonumber,seconds of play,0
+	autonumber,set days of play,1,0
+	autonumber,set hours of play,1,0
+	autonumber,set minutes of play,1,0
+	autonumber,set seconds of play,1,0
+end
+
+script, days of play, begin
+	return(read general(51))
+end
+script, hours of play, begin
+	return(read general(52))
+end
+script, minutes  of play, begin
+	return(read general(53))
+end
+script, seconds of play, begin
+	return(read general(54))
+end
+script,set days of play,d, begin
+	if(d >= 0) then (write general(51,d))
+end
+script,set hours of play,h, begin
+	if(h >= 0, and, h << 24) then (write general(52,h))
+end
+script,set minutes  of play,m, begin
+	if(m >= 0, and, m << 60) then (write general(53,m))
+end
+script,set seconds of play,s, begin
+	if(s >= 0, and, s << 60) then (write general(54,s))
+end
+
+#--------------------------------------------------------------------------
+# appendascii wrapper functions
+# $id="..." and $id+"..." are translated to these to functions by HSpeak
+
+define script,begin
+autonumber,setstring,41,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
+autonumber,appendstring,41,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
+end
+
+script,setstring,id,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20
+a21,a22,a23,a24,a25,a26,a27,a28,a29,a30,a31,a32,a33,a34,a35,a36,a37,a38,a39,a40,begin
+clearstring(id)
+appendascii(id,a1)
+appendascii(id,a2)
+appendascii(id,a3)
+appendascii(id,a4)
+appendascii(id,a5)
+appendascii(id,a6)
+appendascii(id,a7)
+appendascii(id,a8)
+appendascii(id,a9)
+appendascii(id,a10)
+appendascii(id,a11)
+appendascii(id,a12)
+appendascii(id,a13)
+appendascii(id,a14)
+appendascii(id,a15)
+appendascii(id,a16)
+appendascii(id,a17)
+appendascii(id,a18)
+appendascii(id,a19)
+appendascii(id,a20)
+appendascii(id,a21)
+appendascii(id,a22)
+appendascii(id,a23)
+appendascii(id,a24)
+appendascii(id,a25)
+appendascii(id,a26)
+appendascii(id,a27)
+appendascii(id,a28)
+appendascii(id,a29)
+appendascii(id,a30)
+appendascii(id,a31)
+appendascii(id,a32)
+appendascii(id,a33)
+appendascii(id,a34)
+appendascii(id,a35)
+appendascii(id,a36)
+appendascii(id,a37)
+appendascii(id,a38)
+appendascii(id,a39)
+appendascii(id,a40)
+end
+
+script,appendstring,id,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20
+a21,a22,a23,a24,a25,a26,a27,a28,a29,a30,a31,a32,a33,a34,a35,a36,a37,a38,a39,a40,begin
+appendascii(id,a1)
+appendascii(id,a2)
+appendascii(id,a3)
+appendascii(id,a4)
+appendascii(id,a5)
+appendascii(id,a6)
+appendascii(id,a7)
+appendascii(id,a8)
+appendascii(id,a9)
+appendascii(id,a10)
+appendascii(id,a11)
+appendascii(id,a12)
+appendascii(id,a13)
+appendascii(id,a14)
+appendascii(id,a15)
+appendascii(id,a16)
+appendascii(id,a17)
+appendascii(id,a18)
+appendascii(id,a19)
+appendascii(id,a20)
+appendascii(id,a21)
+appendascii(id,a22)
+appendascii(id,a23)
+appendascii(id,a24)
+appendascii(id,a25)
+appendascii(id,a26)
+appendascii(id,a27)
+appendascii(id,a28)
+appendascii(id,a29)
+appendascii(id,a30)
+appendascii(id,a31)
+appendascii(id,a32)
+appendascii(id,a33)
+appendascii(id,a34)
+appendascii(id,a35)
+appendascii(id,a36)
+appendascii(id,a37)
+appendascii(id,a38)
+appendascii(id,a39)
+appendascii(id,a40)
+end
+
+#--------------------------------------------------------------------------
+# betweenable operators
+
+define operator,begin
+20 ^   exponent
+30,mod,modulus
+30 /   divide
+30 *   multiply
+40 --  subtract
+40 +   add
+50 ==  equal
+50 <>  notequal
+50 <<  lessthan
+50 >>  greaterthan
+50 <=  lessthanorequalto
+50 >=  greaterthanorequalto
+60,xor,xor
+60,and,and
+60,or, or
+70 :=  setvariable
+70 +=  increment
+70 -=  decrement
+70 $+  concatenatestrings
+70 $=  copystring
+end
+
+#--------------------------------------------------------------------------
+# global constants
+
+define constant, begin
+0,zero
+1,one
+2,two
+3,three
+4,four
+5,five
+6,six
+7,seven
+8,eight
+9,nine
+10,ten
+0,false
+1,true
+0,off
+1,on
+0,north
+1,east
+2,south
+3,west
+0,up
+2,down
+3,left
+1,right
+0,upkey
+1,downkey
+2,leftkey
+3,rightkey
+4,usekey
+5,cancelkey
+5,menukey
+99,anykey
+0,me
+0,none
+-1,autonumber
+0,currentstat
+1,maximumstat
+1,northwall
+2,eastwall
+4,southwall
+8,westwall
+16,vehicleA
+32,vehicleB
+64,harmtile
+128,overheadtile
+0,inside battle
+1,outside battle
+0,NPCstat:picture
+1,NPCstat:palette
+2,NPCstat:movetype
+  0,NPCmovetype:standstill
+  1,NPCmovetype:wander
+  2,NPCmovetype:pace
+  3,NPCmovetype:rightturns
+  4,NPCmovetype:leftturns
+  5,NPCmovetype:randomturns
+  6,NPCmovetype:chaseyou
+  7,NPCmovetype:avoidyou
+3,NPCstat:movespeed
+4,NPCstat:displaytext
+5,NPCstat:whenactivated
+  0,NPCwhenactivated:changedirection
+  1,NPCwhenactivated:faceplayer
+  2,NPCwhenactivated:donotfaceplayer
+6,NPCstat:giveitem
+7,NPCstat:pushability
+  0,NPCpush:off
+  1,NPCpush:full
+  2,NPCpush:horizontal
+  3,NPCpush:vertical
+  4,NPCpush:uponly
+  5,NPCpush:rightonly
+  6,NPCpush:downonly
+  7,NPCpush:leftonly
+8,NPCstat:activation
+  0,NPCactivation:use
+  1,NPCactivation:touch
+  2,NPCactivation:stepon
+12,NPCstat:script
+13,NPCstat:scriptargument
+14,NPCstat:vehicle
+0,color:red
+1,color:green
+2,color:blue
+0,leftbutton
+1,rightbutton
+-1,getcount
+0,string:outline
+1,string:flat
+0,Enemy:Picture
+1,Enemy:Palette
+2,Enemy:PictureSize
+  0, EnemySize:small
+  1, EnemySize:medium
+  2, EnemySize:large
+56,Enemy:Gold
+57,Enemy:Experience
+58,Enemy:Item
+59,Enemy:ItemPercent
+60,Enemy:RareItem
+61,Enemy:RareItemPercent
+17,Stealability
+   -1, IsNotStealable
+    0, StealableOnce
+    1, StealableInfinity
+18, StealableItem
+19, StealableItemChance
+20, StealableRareItem
+21, StealableRareItemchance
+0, Crop
+1, Wrap
+2, Defaulttile
+-1,party
+end
