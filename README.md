@@ -1,2 +1,2 @@
 # binaries
-Various Binaries for Windows, FreeBSD and DOS
+Various Binaries for DOS & Windows
